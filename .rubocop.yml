@@ -1,0 +1,17 @@
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 140
+
+Metrics:
+  Exclude:
+    - spec/**/*
+
+# Gems are pushed with the account's own MFA settings.
+Gemspec/RequireMFA:
+  Enabled: false
