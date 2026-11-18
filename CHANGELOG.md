@@ -12,5 +12,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Argon2 passwords, with old hashes from another site rehashed when their users log in
 - Sessions in a `sessions` table, with only a SHA-256 of each cookie's token
 - `requires :role` to guard a node's actions, and same-origin checks on forms
-- `log_in`, `log_out` and `current_user` for nodes
+- `login`, `logout` and `current_user` for nodes
 - `LoginLimit` to stop password guessing

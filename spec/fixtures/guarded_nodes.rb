@@ -20,3 +20,9 @@ module LowAuthSpec
     def get = 'members page'
   end
 end
+
+module LowAuthSpec
+  class SessionNode < LowNode
+    include LowAuth::NodeHelpers
+  end
+end

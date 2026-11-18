@@ -29,7 +29,7 @@ LowAuth.configure do |config|
   config.database = DB
   config.login_columns = %i[username email]
   config.roles = { admin: ->(user) { user[:role] == 'admin' } }
-  config.can_log_in = ->(user) { !user[:blocked] }
+  config.can_login = ->(user) { !user[:blocked] }
 end
 
 LowNode.extend(LowAuth::Guard)
@@ -49,13 +49,13 @@ class LoginNode < LowNode
     user = LowAuth::Passwords.authenticate(form[:login], form[:password])
     return LoginFailedNode.render(event:) unless user
 
-    log_in(user, event:)
+    login(user, event:)
     redirect('/')
   end
 end
 ```
 
-`log_in` makes a session and sets its cookie. `log_out(event:)` ends it, and `current_user(event)` is the user who's logged in, or nil.
+`login` makes a session and sets its cookie. `logout(event:)` ends it, and `current_user(event)` is the user who's logged in, or nil.
 
 The cookie holds a random token and the `sessions` table holds only its SHA-256, so a leaked table can't log anyone in. Sessions last 30 days, which `config.session_days` changes.
 

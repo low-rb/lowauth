@@ -22,7 +22,7 @@ module LowAuth
     # Checks a password against a user's old hash, from a site the users came from, until they log in and it's rehashed.
     attr_accessor :legacy_password
     # Whether a user may log in at all, like when they aren't blocked.
-    attr_accessor :can_log_in
+    attr_accessor :can_login
     # Each role a node can require, and how to tell if a user has it: { admin: ->(user) { user[:role] == 'admin' } }.
     attr_accessor :roles
     attr_accessor :cookie_name, :session_days, :secure_cookies
@@ -79,7 +79,7 @@ module LowAuth
   self.users_table = :users
   self.login_columns = %i[username email]
   self.legacy_password = nil
-  self.can_log_in = ->(_user) { true }
+  self.can_login = ->(_user) { true }
   self.roles = {}
   self.cookie_name = 'session'
   self.session_days = 30

@@ -43,7 +43,7 @@ RSpec.configure do |config|
   config.before do
     LowAuth.database = LowAuthSpec.database
     LowAuth.legacy_password = ->(user, password) { user[:old_hash] == "old:#{password}" }
-    LowAuth.can_log_in = ->(user) { !user[:blocked] }
+    LowAuth.can_login = ->(user) { !user[:blocked] }
     LowAuth.roles = { admin: ->(user) { user[:role] == 'admin' } }
   end
 end

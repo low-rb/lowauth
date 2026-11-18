@@ -18,7 +18,7 @@ module LowAuth
       def authenticate(login, password)
         user = find_user(login.to_s.strip)
         return decoy(password) unless user
-        return unless LowAuth.can_log_in.call(user)
+        return unless LowAuth.can_login.call(user)
         return user if user[:password_hash] && Argon2::Password.verify_password(password, user[:password_hash])
 
         upgrade(user, password)
