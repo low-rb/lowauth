@@ -6,6 +6,7 @@ require 'uri'
 require_relative 'version'
 require_relative 'lowauth/passwords'
 require_relative 'lowauth/sessions'
+require_relative 'lowauth/password_links'
 require_relative 'lowauth/login_limit'
 require_relative 'lowauth/guard'
 require_relative 'lowauth/node_helpers'
@@ -26,6 +27,8 @@ module LowAuth
     # Each role a node can require, and how to tell if a user has it: { admin: ->(user) { user[:role] == 'admin' } }.
     attr_accessor :roles
     attr_accessor :cookie_name, :session_days, :secure_cookies
+    # The fewest characters a new password can have.
+    attr_accessor :password_length
 
     def configure
       yield self
@@ -37,6 +40,15 @@ module LowAuth
 
     def users
       database[users_table]
+    end
+
+    # The user a login belongs to, by any of the login columns, ignoring case, or nil.
+    def find_user(login)
+      login = login.to_s.strip
+      return if login.empty?
+
+      matches = login_columns.map { |column| { Sequel.function(:lower, column) => login.downcase } }
+      users.where(Sequel.|(*matches)).first
     end
 
     # The logged in user of the request an event came from, or nil.
@@ -84,4 +96,5 @@ module LowAuth
   self.cookie_name = 'session'
   self.session_days = 30
   self.secure_cookies = true
+  self.password_length = 8
 end

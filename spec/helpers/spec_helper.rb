@@ -32,6 +32,13 @@ module LowAuthSpec
         DateTime :created_at
         DateTime :expires_at
       end
+      db.create_table(:password_links) do
+        primary_key :id
+        String :token_digest, unique: true
+        Integer :user_id
+        DateTime :created_at
+        DateTime :expires_at
+      end
     end
   end
 end

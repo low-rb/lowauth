@@ -14,9 +14,13 @@ module LowAuth
         Argon2::Password.create(password)
       end
 
+      def long_enough?(password)
+        password.to_s.length >= LowAuth.password_length
+      end
+
       # The user a login and password belong to, or nil.
       def authenticate(login, password)
-        user = find_user(login.to_s.strip)
+        user = LowAuth.find_user(login)
         return decoy(password) unless user
         return unless LowAuth.can_login.call(user)
         return user if user[:password_hash] && Argon2::Password.verify_password(password, user[:password_hash])
@@ -25,13 +29,6 @@ module LowAuth
       end
 
       private
-
-      def find_user(login)
-        return if login.empty?
-
-        matches = LowAuth.login_columns.map { |column| { Sequel.function(:lower, column) => login.downcase } }
-        LowAuth.users.where(Sequel.|(*matches)).first
-      end
 
       def upgrade(user, password)
         return if user[:password_hash] || LowAuth.legacy_password.nil?
