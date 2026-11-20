@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lowauth (0.2.0)
+    lowauth (0.2.1)
       argon2 (~> 2.3)
       lownode (~> 0.5, >= 0.5.8)
       sequel (~> 5.0)
@@ -165,7 +165,7 @@ CHECKSUMS
   json (3.1.0) sha256=3ce7ccf8fde58960177a3a756c31f292a4c1e1dedee884547096a5b0604e3bd8
   language_server-protocol (3.17.0.6) sha256=5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
-  lowauth (0.2.0)
+  lowauth (0.2.1)
   lowevent (0.8.2) sha256=7164ce18ce8f3f4c4909a64d49f7ad1305362d51f90c17eee98ad27219a85164
   lowkey (0.7.3) sha256=22f2e84b109f5ecbdcbf47646147064996177f6d39b80c1932ce2ee39c351533
   lownode (0.5.8) sha256=d4db97e34b4ab8bb143705890db590ebb785290143692cbda3ed9128f92575c7
