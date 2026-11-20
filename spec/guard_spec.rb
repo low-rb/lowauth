@@ -37,6 +37,52 @@ RSpec.describe LowAuth::Guard do
     expect(node.post(event: event_for(admin_id))).to be_nil
   end
 
+  describe 'allows' do
+    let(:editors) { LowAuthSpec::EditorsNode }
+    let(:editor_id) { LowAuth.users.insert(username: 'edna') }
+
+    it 'lets in the users its block is true for' do
+      expect(editors.get(event: event_for(editor_id)).response.body.read).to eq('editors page')
+      expect(editors.get(event: event_for(member_id))).to be_nil
+    end
+
+    it 'gives the node allowed?, for a menu to ask' do
+      expect(editors.allowed?(LowAuth.users.where(id: editor_id).first)).to be(true)
+      expect(editors.allowed?(nil)).to be(false)
+    end
+  end
+
+  describe 'requires' do
+    it 'is short for allows with the role' do
+      expect(node.allowed?(LowAuth.users.where(id: admin_id).first)).to be(true)
+      expect(node.allowed?(LowAuth.users.where(id: member_id).first)).to be(false)
+    end
+  end
+
+  describe 'with a login path' do
+    around do |example|
+      LowAuth.login_path = '/login'
+      example.run
+    ensure
+      LowAuth.login_path = nil
+    end
+
+    it 'sends a logged out visitor to log in, and back after' do
+      response = node.get(event: event_for(nil)).response
+
+      expect(response.status).to eq(303)
+      expect(response.headers['location']).to eq('/login?redirect=%2Fadmin')
+    end
+
+    it "still doesn't let a logged in user without the role in" do
+      expect(node.get(event: event_for(member_id))).to be_nil
+    end
+
+    it "doesn't send a form from a logged out visitor to log in" do
+      expect(node.post(event: event_for(nil, 'origin' => 'https://example.com'))).to be_nil
+    end
+  end
+
   it 'lets any logged in user in without a role' do
     any_user = LowAuthSpec::MembersNode
 

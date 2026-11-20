@@ -11,6 +11,15 @@ module LowAuthSpec
     def post = 'posted'
   end
 
+  class EditorsNode < LowNode
+    extend LowAuth::Guard
+    include Controller
+
+    allows { |user| user && user[:username].start_with?('ed') }
+
+    def get = 'editors page'
+  end
+
   class MembersNode < LowNode
     extend LowAuth::Guard
     include Controller

@@ -29,6 +29,8 @@ module LowAuth
     attr_accessor :cookie_name, :session_days, :secure_cookies
     # The fewest characters a new password can have.
     attr_accessor :password_length
+    # Where a logged out visitor reading a guarded page is sent to log in, like '/login', or nil for a 404.
+    attr_accessor :login_path
 
     def configure
       yield self

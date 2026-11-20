@@ -6,9 +6,9 @@ require_relative '../../lib/lowauth'
 # A database with the tables LowAuth uses, and an event like Raindeer's, with a request's cookies and headers.
 module LowAuthSpec
   Request = Struct.new(:headers)
-  Event = Struct.new(:cookies, :request) do
-    def self.from(cookies: {}, headers: {})
-      new(cookies, Request.new({ 'host' => 'example.com' }.merge(headers)))
+  Event = Struct.new(:cookies, :request, :path) do
+    def self.from(cookies: {}, headers: {}, path: '/admin')
+      new(cookies, Request.new({ 'host' => 'example.com' }.merge(headers)), path)
     end
   end
 

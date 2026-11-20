@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- `allows { |user| ... }` guards a node with any rule, which is also the node's `allowed?(user)`. `requires :admin` is short for `allows { |user| LowAuth.role?(user, :admin) }`
+- `config.login_path` sends a logged out visitor reading a guarded page to log in, with the page as `?redirect=`, where they got a 404
+
 ## 0.2.0
 
 ### Added

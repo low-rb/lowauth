@@ -86,17 +86,28 @@ A link lasts an hour and works once, and a new one replaces any the user had. `P
 
 ## Guards
 
-`requires :admin` lets only users with the `admin` role call a node's actions, and `requires` lets in any logged in user:
+`allows` lets only the users its block is true for call a node's actions:
 
 ```ruby
 class InvitesNode < LowNode
   observe '/admin/invites'
 
-  requires :admin
+  allows { |user| LowAuth.role?(user, :admin) }
 end
 ```
 
+The block gets the logged in user, or nil for a visitor. It's also the node's `allowed?(user)`, so a menu can ask whether to link to the node, like `InvitesNode.allowed?(user)`, with the same rule that guards it.
+
+`requires :admin` is short for that block, with the role it's given, and `requires` lets in any logged in user:
+
+```ruby
+requires :admin # allows { |user| LowAuth.role?(user, :admin) }
+requires        # allows { |user| LowAuth.role?(user, nil) }, which is true for any user
+```
+
 Anyone else gets nothing, so the router moves on and responds with a 404. Actions that change things, like `receive` and `post`, also need the form's Origin header to be this site.
+
+With `config.login_path = '/login'`, a logged out visitor reading a guarded page, like `/admin`, is sent to `/login?redirect=%2Fadmin` instead, so the login page can send them back to it. A logged in user without the role still gets a 404, as does a form.
 
 ## Passwords from another site
 
