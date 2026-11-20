@@ -98,16 +98,16 @@ end
 
 The block gets the logged in user, or nil for a visitor. It's also the node's `allowed?(user)`, so a menu can ask whether to link to the node, like `InvitesNode.allowed?(user)`, with the same rule that guards it.
 
-`requires :admin` is short for that block, with the role it's given, and `requires` lets in any logged in user:
+Given a role instead of a block, `allows` makes that block for you, and alone it lets in any logged in user:
 
 ```ruby
-requires :admin # allows { |user| LowAuth.role?(user, :admin) }
-requires        # allows { |user| LowAuth.role?(user, nil) }, which is true for any user
+allows :admin # allows { |user| LowAuth.role?(user, :admin) }
+allows        # allows { |user| LowAuth.role?(user, nil) }, which is true for any user
 ```
 
 Anyone else gets nothing, so the router moves on and responds with a 404. Actions that change things, like `receive` and `post`, also need the form's Origin header to be this site.
 
-With `config.login_path = '/login'`, a logged out visitor reading a guarded page, like `/admin`, is sent to `/login?redirect=%2Fadmin` instead, so the login page can send them back to it. A logged in user without the role still gets a 404, as does a form.
+With `config.login_path = '/login'`, a logged out visitor reading a guarded page, like `/admin`, is sent to `/login?origin=%2Fadmin` instead, so the login page can send them back to it. A logged in user without the role still gets a 404, as does a form.
 
 ## Passwords from another site
 

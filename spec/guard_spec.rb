@@ -52,8 +52,8 @@ RSpec.describe LowAuth::Guard do
     end
   end
 
-  describe 'requires' do
-    it 'is short for allows with the role' do
+  describe 'allows with a role' do
+    it 'is short for allows with a block that checks the role' do
       expect(node.allowed?(LowAuth.users.where(id: admin_id).first)).to be(true)
       expect(node.allowed?(LowAuth.users.where(id: member_id).first)).to be(false)
     end
@@ -71,7 +71,7 @@ RSpec.describe LowAuth::Guard do
       response = node.get(event: event_for(nil)).response
 
       expect(response.status).to eq(303)
-      expect(response.headers['location']).to eq('/login?redirect=%2Fadmin')
+      expect(response.headers['location']).to eq('/login?origin=%2Fadmin')
     end
 
     it "still doesn't let a logged in user without the role in" do

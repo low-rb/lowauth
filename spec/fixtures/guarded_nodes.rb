@@ -5,7 +5,7 @@ module LowAuthSpec
     extend LowAuth::Guard
     include Controller
 
-    requires :admin
+    allows :admin
 
     def get = 'admin page'
     def post = 'posted'
@@ -24,7 +24,7 @@ module LowAuthSpec
     extend LowAuth::Guard
     include Controller
 
-    requires
+    allows
 
     def get = 'members page'
   end

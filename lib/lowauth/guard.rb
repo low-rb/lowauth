@@ -4,21 +4,18 @@ require 'cgi'
 
 module LowAuth
   # "allows { |user| ... }" in a node lets only the users its block is true for call its actions, like
-  # "allows { |user| LowAuth.role?(user, :admin) }". "requires :admin" is short for that, and "requires" for any logged in
-  # user. The block is also the node's "allowed?(user)", so a menu can ask whether to link to it.
+  # "allows { |user| LowAuth.role?(user, :admin) }". "allows :admin" is short for that, and "allows" alone lets in any
+  # logged in user. The rule is also the node's "allowed?(user)", so a menu can ask whether to link to it.
   # Anyone else gets nothing, so the router moves on and responds with a 404, which doesn't say there's a page. With
-  # config.login_path set, a logged out visitor reading a page is sent to log in instead, and back to it after.
+  # config.login_path set, a logged out visitor reading a page is sent to log in instead, with it as ?origin=, to come back to.
   # Actions that change things, like "receive" and "post", also need the form to come from this site.
   module Guard
     READS = %i[render get query side_effect].freeze
 
-    def allows(&rule)
+    def allows(role = nil, &rule)
+      rule ||= ->(user) { LowAuth.role?(user, role) }
       define_singleton_method(:allowed?) { |user| rule.call(user) ? true : false }
       singleton_class.prepend(Guard.module_for_actions)
-    end
-
-    def requires(role = nil)
-      allows { |user| LowAuth.role?(user, role) }
     end
 
     # Whether an event's user may call an action, by the node's rule, with a form from this site for one that changes things.
@@ -41,7 +38,7 @@ module LowAuth
       path = event.respond_to?(:path) ? event.path : nil
       return LowAuth.login_path unless path
 
-      "#{LowAuth.login_path}?redirect=#{CGI.escape(path)}"
+      "#{LowAuth.login_path}?origin=#{CGI.escape(path)}"
     end
 
     def self.module_for_actions

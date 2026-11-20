@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- `requires` is now `allows`: `allows :admin` is short for `allows { |user| LowAuth.role?(user, :admin) }`, and `allows` alone lets in any logged in user. `requires` is removed
+- `config.login_path` sends a logged out visitor to log in with the page they opened as `?origin=`, where it was `?redirect=`
+
 ## 0.2.1
 
 ### Added
